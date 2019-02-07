@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AmbientScoping", "AmbientScoping\AmbientScoping.vbproj", "{03288179-7B8B-43B4-B72F-7F366688F27F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E06F530-5743-4B04-BCF3-EDAE5EB097FE}"
+	ProjectSection(SolutionItems) = preProject
+		..\AmbientScoping.nuspec = ..\AmbientScoping.nuspec
+		..\Pack-AmbientScoping-Release.bat = ..\Pack-AmbientScoping-Release.bat
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03288179-7B8B-43B4-B72F-7F366688F27F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03288179-7B8B-43B4-B72F-7F366688F27F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03288179-7B8B-43B4-B72F-7F366688F27F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03288179-7B8B-43B4-B72F-7F366688F27F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

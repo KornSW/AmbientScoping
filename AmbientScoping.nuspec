@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>AmbientScoping</id>
+    <version>0.1.0-beta</version>
+    <title>AmbientScoping</title>
+    <authors>KornSW</authors>
+    <owners>KornSW</owners>
+    <!-- https://spdx.org/licenses/ -->
+    <license type="expression">GPL-3.0-only</license>
+    <projectUrl>https://github.com/KornSW/kSystemExtensions</projectUrl>
+    <!--<iconUrl>https://github.com/KornSW/kSystemExtensions/Master/kSystemExtensions.Logo.png</iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>AmbientScoping</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright KornSW</copyright>
+    <tags>Ambient Scoping Scoped Singleton</tags>
+  </metadata>
+  <files>
+    <!-- https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory -->
+    <file src="AmbientScoping\AmbientScoping\bin\Release\AmbientScoping.dll" target="lib/{tfm}" />
+    <file src="AmbientScoping\AmbientScoping\bin\Release\AmbientScoping.xml" target="lib/{tfm}" />
+    <file src="AmbientScoping\AmbientScoping\bin\Release\AmbientScoping.pdb" target="lib/{tfm}" />
+  </files>
+</package>

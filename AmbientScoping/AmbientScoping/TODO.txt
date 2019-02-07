@@ -1,0 +1,21 @@
+﻿idee Extension
+
+
+.PullSingleton()
+
+
+singleton: IInstanceHandlingStrategy (hier kann ein scopefx eingehängt werden) >> default ist appdmain
+
+(für jedn contrsuktor wird dan nauch ein pull erzeugt!!!)
+
+
+
+singleton.instancdehandlingstrategy(  = nrw strat (dfefaultscope=profile
+singleton.instancdehandlingstrategy(wenn sopefy).setScope(of Iassemblyindexer)(profile)
+
+singleton.typeresolvingstrategy.mapconcrete(of Iassemblyindexer,TwComposcoed)(profile)
+singleton.typeresolvingstrategy.mapconcrete(of assemblyindexer,TwComposcoed)(profile)
+
+singleton.typeresolvingmethod = function()  compontdiscovery.resolve!!!
+
+
