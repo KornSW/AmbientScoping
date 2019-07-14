@@ -1,1 +1,2 @@
-nuget pack ./ActivationHooks.nuspec -Build -Symbols -OutputDirectory "..\..\(NuGetRepo)" -InstallPackageToOutputPath
+nuget pack ./ActivationHooks.nuspec -Build -Symbols -OutputDirectory "..\(NuGetRepo)" -InstallPackageToOutputPath
+PAUSE

@@ -64,13 +64,19 @@ Public Module ActivationHooks
     target = DirectCast(ActivateNewMethod.Invoke(GetType(T), args), T)
   End Sub
 
+  ''' <summary>
+  ''' Scope: AppDomain global
+  ''' </summary>
   <Extension()>
   Public Sub ActivateSingleton(Of T)(ByRef target As T, ParamArray args() As Object)
     target = DirectCast(ActivateSingletonMethod.Invoke(GetType(T), args), T)
   End Sub
 
+  ''' <summary>
+  ''' Scope: Call (based on AsyncLocal which is like TreadStatic including all Sub-Threads)
+  ''' </summary>
   <Extension()>
-  Public Sub ActivateThreadStatic(Of T)(ByRef target As T, ParamArray args() As Object)
+  Public Sub ActivateCallStatic(Of T)(ByRef target As T, ParamArray args() As Object)
     target = DirectCast(ActivateThreadStaticMethod.Invoke(GetType(T), args), T)
   End Sub
 
