@@ -243,3 +243,4 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/(Vendor)/NuGet/ComponentDiscovery.3.1.2/lib/{tfm}

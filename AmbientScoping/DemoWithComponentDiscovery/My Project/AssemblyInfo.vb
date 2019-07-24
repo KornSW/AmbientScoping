@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("ActivationHooks")>
-<Assembly: AssemblyDescription("ActivationHooks")>
-<Assembly: AssemblyCompany("KornSW")>
-<Assembly: AssemblyProduct("ActivationHooks")>
-<Assembly: AssemblyCopyright("KornSW")>
-<Assembly: AssemblyTrademark("KornSW")>
+<Assembly: AssemblyTitle("Scoping Show Case")>
+<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyProduct("Scoping Show Case")>
+<Assembly: AssemblyCopyright("")>
+<Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("c8bc83b2-35f4-4084-a62b-a302bafadc80")>
+<Assembly: Guid("c6c7706d-9517-4e31-9217-9b86275732ba")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.1.0.0")>
-<Assembly: AssemblyFileVersion("1.1.0.0")>
+<Assembly: AssemblyVersion("1.0.0.0")>
+<Assembly: AssemblyFileVersion("1.0.0.0")>

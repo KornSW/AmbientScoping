@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>AmbientScoping</id>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <title>AmbientScoping</title>
     <authors>KornSW</authors>
     <owners>KornSW</owners>
@@ -14,7 +14,12 @@
     <description>AmbientScoping</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright KornSW</copyright>
-    <tags>Ambient Scoping Scoped Singleton</tags>
+    <tags>Ambience Scoping Scoped Singleton AOP Aspects</tags>
+    <dependencies>
+      <group>
+        <dependency id="ActivationHooks" version="1.1.0" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <!-- https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory -->

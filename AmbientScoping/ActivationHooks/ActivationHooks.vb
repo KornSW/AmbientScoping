@@ -18,14 +18,17 @@ Public Module ActivationHooks
   )
 
   <DebuggerBrowsable(DebuggerBrowsableState.Never)>
-  Public ActivateSingletonMethod As Func(Of Type, Object(), Object) = (
-    Function(targeType, args)
+  Public ActivateSingletonMethod As Func(Of Type, Object) = (
+    Function(targeType)
       SyncLock _SingletonInstances
         If (_SingletonInstances.ContainsKey(targeType)) Then
           Return _SingletonInstances(targeType)
         End If
       End SyncLock
-      Dim newInstance = ActivateNewMethod.Invoke(targeType, args)
+
+      'TODO: factory und type resolving
+
+      Dim newInstance = ActivateNewMethod.Invoke(targeType, {})
       SyncLock _SingletonInstances
         If (_SingletonInstances.ContainsKey(targeType)) Then
           newInstance = _SingletonInstances(targeType)
@@ -60,24 +63,69 @@ Public Module ActivationHooks
 #End Region
 
   <Extension()>
-  Public Sub ActivateNew(Of T)(ByRef target As T, ParamArray args() As Object)
+  Public Function GetNewInstance(t As Type, ParamArray args() As Object) As Object
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Function
+
+  <Extension()>
+  Public Sub ApplyNewInstance(Of T)(ByRef target As T, ParamArray args() As Object)
     target = DirectCast(ActivateNewMethod.Invoke(GetType(T), args), T)
   End Sub
 
-  ''' <summary>
-  ''' Scope: AppDomain global
-  ''' </summary>
+  Public Function GetNewInstance(Of T)(ParamArray args() As Object) As T
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Function
+
   <Extension()>
-  Public Sub ActivateSingleton(Of T)(ByRef target As T, ParamArray args() As Object)
-    target = DirectCast(ActivateSingletonMethod.Invoke(GetType(T), args), T)
+  Public Sub ApplySingleton(Of T)(ByRef target As T)
+    target = DirectCast(ActivateSingletonMethod.Invoke(GetType(T)), T)
   End Sub
 
-  ''' <summary>
-  ''' Scope: Call (based on AsyncLocal which is like TreadStatic including all Sub-Threads)
-  ''' </summary>
-  <Extension()>
-  Public Sub ActivateCallStatic(Of T)(ByRef target As T, ParamArray args() As Object)
-    target = DirectCast(ActivateThreadStaticMethod.Invoke(GetType(T), args), T)
+  Public Function GetSingleton(Of T)() As T
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Function
+
+  Public Sub SetEffectiveTypeResolver(targetType As Type, resolver As Func(Of Type, Type))
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Sub
+
+  Public Sub SetEffectiveTypeResolver(Of T)(resolver As Func(Of Type, Type))
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Sub
+
+  Public Sub SetParameterlessFactoryForType(Of T)(factory As Func(Of T))
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Sub
+
+  Public Function GetParameterlessFactoryForType(targetType As Type) As Func(Of Object)
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Function
+
+  Public Function GetParameterlessFactoryForType(Of T)() As Func(Of T)
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Function
+
+  Public Sub SetParameterlessFactoryForType(targetType As Type, factory As Action(Of Object))
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Sub
+
+  Public Sub SetOnDemandInitializerForType(targetType As Type, initializer As Action(Of Object))
+    'TODO: implementation
+    Throw New NotImplementedException()
+  End Sub
+
+  Public Sub SetOnDemandInitializerForType(Of T)(initializer As Action(Of T))
+    'TODO: implementation
+    Throw New NotImplementedException()
   End Sub
 
 End Module
