@@ -5,8 +5,8 @@ Public Module ActivationHooks
 
   Private _SingletonInstances As New Dictionary(Of Type, Object)
 
-  <ThreadStatic>
-  Private _ThreadStaticInstances As New Dictionary(Of Type, Object)
+  '<ThreadStatic>
+  'Private _ThreadStaticInstances As New Dictionary(Of Type, Object)
 
 #Region " Hooks "
 
@@ -14,49 +14,6 @@ Public Module ActivationHooks
   Public ActivateNewMethod As Func(Of Type, Object(), Object) = (
     Function(targeType, args)
       Return Activator.CreateInstance(targeType, args)
-    End Function
-  )
-
-  <DebuggerBrowsable(DebuggerBrowsableState.Never)>
-  Public ActivateSingletonMethod As Func(Of Type, Object) = (
-    Function(targeType)
-      SyncLock _SingletonInstances
-        If (_SingletonInstances.ContainsKey(targeType)) Then
-          Return _SingletonInstances(targeType)
-        End If
-      End SyncLock
-
-      'TODO: factory und type resolving
-
-      Dim newInstance = ActivateNewMethod.Invoke(targeType, {})
-      SyncLock _SingletonInstances
-        If (_SingletonInstances.ContainsKey(targeType)) Then
-          newInstance = _SingletonInstances(targeType)
-        Else
-          _SingletonInstances.Add(targeType, newInstance)
-        End If
-        Return newInstance
-      End SyncLock
-    End Function
-  )
-
-  <DebuggerBrowsable(DebuggerBrowsableState.Never)>
-  Public ActivateThreadStaticMethod As Func(Of Type, Object(), Object) = (
-    Function(targeType, args)
-      SyncLock _ThreadStaticInstances
-        If (_ThreadStaticInstances.ContainsKey(targeType)) Then
-          Return _ThreadStaticInstances(targeType)
-        End If
-      End SyncLock
-      Dim newInstance = ActivateNewMethod.Invoke(targeType, args)
-      SyncLock _ThreadStaticInstances
-        If (_ThreadStaticInstances.ContainsKey(targeType)) Then
-          newInstance = _ThreadStaticInstances(targeType)
-        Else
-          _ThreadStaticInstances.Add(targeType, newInstance)
-        End If
-        Return newInstance
-      End SyncLock
     End Function
   )
 
@@ -77,11 +34,6 @@ Public Module ActivationHooks
     'TODO: implementation
     Throw New NotImplementedException()
   End Function
-
-  <Extension()>
-  Public Sub ApplySingleton(Of T)(ByRef target As T)
-    target = DirectCast(ActivateSingletonMethod.Invoke(GetType(T)), T)
-  End Sub
 
   Public Function GetSingleton(Of T)() As T
     'TODO: implementation

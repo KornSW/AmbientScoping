@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Scoping Show Case")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("Scoping Show Case")>
-<Assembly: AssemblyCopyright("")>
-<Assembly: AssemblyTrademark("")>
+<Assembly: AssemblyTitle("AmbientScoping - ShowCase")>
+<Assembly: AssemblyDescription("AmbientScoping")>
+<Assembly: AssemblyCompany("KornSW")>
+<Assembly: AssemblyProduct("AmbientScoping")>
+<Assembly: AssemblyCopyright("KornSW")>
+<Assembly: AssemblyTrademark("KornSW")>
 
 <Assembly: ComVisible(False)>
 
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")>
-<Assembly: AssemblyFileVersion("1.0.0.0")>
+<Assembly: AssemblyVersion("0.0.0.0")>
+<Assembly: AssemblyFileVersion("0.0.0.0")>

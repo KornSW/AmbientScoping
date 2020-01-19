@@ -1,7 +1,16 @@
 ﻿Imports System
+Imports System.Threading.Tasks
 Imports AmbientScoping
 Imports ComponentDiscovery
 Imports DemoWithComponentDiscovery
+
+
+'Identititycontext -> Session.user + EnvironmenContext.windowsuser + Uow.processowneruser
+
+'CallContext -> Session -> PermissionContext
+'            -> Uow -> Proifile
+'            -> Tenant
+'            -> EnvironmenContext (connectionstrings und srviceurls
 
 Public Module DemoModule
 
@@ -10,8 +19,60 @@ Public Module DemoModule
 
   Sub Main()
 
-    Console.WriteLine("Please enter Tenant name ('TenantA' or 'TenentB'):")
-    Dim currentTenantName As String = Console.ReadLine()
+    Console.WriteLine("### AmbientScoping - ShowCase ###")
+
+    WorkingContext.BehaviourOnUnboundAccess = WorkingContext.UnboundAccessBehaviour.ReturnNothing
+    WorkingContext.OnContextCreatedAction = Sub(id) Console.WriteLine("OnContextCreated(HOOK): " + id)
+    WorkingContext.OnContextSuspendedAction = Sub(id) Console.WriteLine("OnContextSuspended(HOOK):  " + id)
+    WorkingContext.OnCurrentCallBoundAction = Sub(id) Console.WriteLine("OnCurrentCallBound(HOOK):  " + id)
+    WorkingContext.OnCurrentCallUnboundAction = Sub(id) Console.WriteLine("OnCurrentCallUnbound(HOOK):  " + id)
+    '---------------------------------------------------------------------------
+
+    WorkingContext.BindCurrentCall("Job 1")
+
+    Console.WriteLine("Please enter Tenant name for Job 1 ('TenantA' or 'TenentB'):")
+    TenantBindingContext.Current.TenantIdentifier = Console.ReadLine()
+
+    WorkingContext.BindCurrentCall("Job 2")
+
+    Console.WriteLine("Please enter Tenant name for Job 2 ('TenantA' or 'TenentB'):")
+    TenantBindingContext.Current.TenantIdentifier = Console.ReadLine()
+
+    '---------------------------------------------------------------------------
+
+    WorkingContext.BindCurrentCall("Job 1")
+    Task.Run(AddressOf MyJobBl).ContinueWith(
+      Sub()
+        WorkingContext.Current.SuspendContext(True)
+      End Sub)
+
+    WorkingContext.BindCurrentCall("Job 2")
+    Task.Run(AddressOf MyJobBl).ContinueWith(
+      Sub()
+        WorkingContext.Current.SuspendContext(True)
+      End Sub)
+
+    '---------------------------------------------------------------------------
+
+    WorkingContext.UnbindCurrentCall()
+    Console.WriteLine("Jobs started - hit return to shudown...")
+    Console.ReadLine()
+
+
+
+
+
+
+
+
+
+
+
+
+
+    End '######################################################################################################
+
+    '----------------------------------------------------------------------------------------------------------
 
     '##### wire-up between ActivationHooks & AmbientScoping #########################################
 
@@ -24,32 +85,32 @@ Public Module DemoModule
 
 
     'MAJOR GOAL 1. FOR THIS SHOWCASE: for each singleton, we want the AmbientScoping to be used
-    ActivationHooks.ActivateSingletonMethod = (
-      Function(requestdType)
+    'ActivationHooks.ActivateSingletonMethod = (
+    '  Function(requestdType)
 
-        'the scope for each singleton comes from the centralized configuration of the AmbientScoping
-        Dim scope As Scope = ScopedSingleton.ResolveDefaultScopeForType(requestdType)
+    '    'the scope for each singleton comes from the centralized configuration of the AmbientScoping
+    '    Dim scope As ScopeProvider = ScopedSingleton.ResolveDefaultScopeForType(requestdType)
 
-        'the factory itself will be redirected back to the ActivationHooks
-        'to keep the posibillity to change the implementation type of services
-        Dim factory As Func(Of Object) = Function() ActivationHooks.GetParameterlessFactoryForType(requestdType).Invoke()
+    '    'the factory itself will be redirected back to the ActivationHooks
+    '    'to keep the posibillity to change the implementation type of services
+    '    Dim factory As Func(Of Object) = Function() ActivationHooks.GetParameterlessFactoryForType(requestdType).Invoke()
 
-        'now the singleton can be requested from the AmbientScoping
-        Return ScopedSingleton.GetOrCreateInstance(requestdType, scope, factory)
+    '    'now the singleton can be requested from the AmbientScoping
+    '    Return ScopedSingleton.GetOrCreateInstance(requestdType, scope, factory)
 
-      End Function
-    )
+    '  End Function
+    ')
 
     '##### apply the configuation for our demo project
 
-    TenantScope.ActivateTenant(currentTenantName) '< this should be done before the first Tenant-Scoped singleton in requested
+    'TenantScope.ActivateTenant(currentTenantName) '< this should be done before the first Tenant-Scoped singleton in requested
 
     'our 'MyService' should be used in 'ProfileScope'
-    ScopedSingleton.SetDefaultScopeResolverForType(Of IMyService)(Function(t) ProfileScope.Current)
+    'ScopedSingleton.SetDefaultScopeResolverForType(Of IMyService)(Function(t) ProfileScopeProvider.GetInstance)
 
     'the ComponentDiscovery should be living in 'TenantScope' (the state will be different for different tenants)
-    ScopedSingleton.SetDefaultScopeResolverForType(Of ClassificationBasedAssemblyIndexer)(Function(t) TenantScope.Current)
-    ScopedSingleton.SetDefaultScopeResolverForType(Of ClassificationBasedTypeIndexer)(Function(t) TenantScope.Current)
+    ' ScopedSingleton.SetDefaultScopeResolverForType(Of ClassificationBasedAssemblyIndexer)(Function(t) TenantScope.Current)
+    'ScopedSingleton.SetDefaultScopeResolverForType(Of ClassificationBasedTypeIndexer)(Function(t) TenantScope.Current)
 
     'MAJOR GOAL 2. FOR THIS SHOWCASE:  we want the possibillity to request singletons via interface instead of using the concrete type
     ActivationHooks.SetEffectiveTypeResolver(Of IAssemblyIndexer)(Function(base) GetType(ClassificationBasedAssemblyIndexer))
@@ -79,7 +140,7 @@ Public Module DemoModule
 
         instance.AddTaxonomicDimension("CustomizingLevel")
         instance.AddClearances("CustomizingLevel", "BaseFeatures")
-        instance.AddClearances("CustomizingLevel", currentTenantName)
+        '  instance.AddClearances("CustomizingLevel", currentTenantName)
 
         'after the assembly-indexer has been initialized, it will create an index of all assemblies which 
         'having an <Assembly: AssemblyClassification(...)> - Attribute matching with the clearances above!
@@ -102,7 +163,7 @@ Public Module DemoModule
         Exit Do
       End If
 
-      ProfileScope.ActivateProfile(input)
+      ' ProfileScopeProvider.ActivateProfile(input)
 
       Dim myService = ActivationHooks.GetSingleton(Of IMyService)
       myService.CountAndPrint()
@@ -111,12 +172,98 @@ Public Module DemoModule
 
   End Sub
 
+  Private Sub MyJobBl()
+
+
+
+
+
+  End Sub
+
 End Module
+
+
+
+'-----------------------------------------------------------------------------------------------------------------------
+
+
+
+Public Interface ITypeActivationRulesetRegistrar
+  Sub SetEffectiveTypeResolver(targetType As Type, resolver As Func(Of Type, Type))
+  Sub SetEffectiveTypeResolver(Of T)(resolver As Func(Of Type, Type))
+End Interface
+Public Interface ITypeActivationRuleset
+  Sub ApplyTo(registrar As ITypeActivationRulesetRegistrar)
+End Interface
+Public Interface IAmbientScopingRulesetRegistrar
+  Sub SetDefaultScopeResolverForType(Of T)(resolver As Func(Of Type, ScopeProvider))
+  Sub SetDefaultScopeResolverForType(targetType As Type, resolver As Func(Of Type, ScopeProvider))
+End Interface
+Public Interface IAmbientScopingRuleset
+  Sub ApplyTo(registrar As IAmbientScopingRulesetRegistrar)
+End Interface
+
+
+'-----------------------------------------------------------------------------------------------------------------------
+
+Public Class CompositionRuleset
+  Implements IAmbientScopingRuleset  'per componetnDiscovery suchen...
+  'Implements ITypeActivationRuleset  'per componetnDiscovery suchen...
+
+  Public Sub ApplyTo(registrar As IAmbientScopingRulesetRegistrar) Implements IAmbientScopingRuleset.ApplyTo
+    'registrar.SetDefaultScopeResolverForType(Of SchnitzelManagementService)(Function(t) ApplicationStateAcessor.Current)
+    ' registrar.SetDefaultScopeResolverForType(Of SchnitzelContext)(Function(t) ProfileScopeProvider.GetInstance)
+  End Sub
+
+End Class
+
+
+Public Class SchnitzelManagementService
+
+  Public Shared Function GetInstance() As SchnitzelManagementService
+    '  Return ScopedSingleton.GetOrCreateInstance(Of SchnitzelManagementService)(ApplicationStateAcessor.Current)
+
+    'scope definiert in klasse 'CompositionRuleset'
+    '  Return ActivationHooks.GetSingleton(Of SchnitzelManagementService)
+  End Function
+
+  Public ReadOnly Property CurrentSchnitzelContext As SchnitzelContext
+    Get
+      ' ScopedSingleton.SetDefaultScopeResolverForType(Of SchnitzelManagementService)(Function(t) ApplicationStateAcessor.Current)
+      ' ScopedSingleton.SetDefaultScopeResolverForType(Of SchnitzelContext)(Function(t) ProfileScopeProvider.GetInstance)
+
+
+
+    End Get
+  End Property
+
+End Class
+
+'IMMUTABLE
+Public NotInheritable Class SchnitzelContext
+
+  Public Shared ReadOnly Property Current As SchnitzelContext
+    Get
+      'scope definiert in klasse 'CompositionRuleset'
+      Return SchnitzelManagementService.GetInstance().CurrentSchnitzelContext
+    End Get
+  End Property
+
+  Private Sub New(panate As String, füllung As String)
+    Me.Panate = panate
+    Me.Füllung = füllung
+  End Sub
+
+  Public ReadOnly Property Panate As String
+  Public ReadOnly Property Füllung As String
+
+End Class
+
+'-----------------------------------------------------------------------------------------------------------------------
 
 Public Interface IMyService
   Sub CountAndPrint()
 End Interface
-
 
 <TypeClassification("CustomizingLevel", "TenantA")>
 Public Class MyServiceA

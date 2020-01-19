@@ -53,12 +53,19 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StateHandling\ScopedStates.vb" />
-    <Compile Include="Scoping\Scopes.vb" />
-    <Compile Include="Scoping\ScopedSingleton.vb" />
-    <Compile Include="Aspects\LifetimeBindings.vb" />
-    <Compile Include="Ambience\AmbientScopingExtensions.vb" />
-    <Compile Include="StateHandling\StateSnapshot.vb" />
+    <Compile Include="Contexts\CallBindingContext.vb" />
+    <Compile Include="Contexts\WorkingContext.vb" />
+    <Compile Include="Contexts\TenantBindingContext.vb" />
+    <Compile Include="Contexts\UowBindingContext.vb" />
+    <Compile Include="Contexts\ProfileBindingContext.vb" />
+    <Compile Include="ScopeProviders\Common\CallScopeProvider.vb" />
+    <Compile Include="ScopeProviders\Common\UowScopeProvider.vb" />
+    <Compile Include="ScopeProviders\Common\TenantScopeProvider.vb" />
+    <Compile Include="ScopeProviders\Common\ApplicationScopeProvider.vb" />
+    <Compile Include="ScopeProviders\Common\ProfileScopeProvider.vb" />
+    <Compile Include="ScopeProviders\ScopeProvider.vb" />
+    <Compile Include="ISingletonContainer.vb" />
+    <Compile Include="ScopedSingleton.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -74,6 +81,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="StatePreservation\IStatePreservationAdapter.vb" />
+    <Compile Include="StatePreservation\SingletonStatePreservationController.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -93,9 +102,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
