@@ -1,9 +1,13 @@
-﻿Imports System
+﻿'  +------------------------------------------------------------------------+
+'  ¦ this file is part of an open-source solution which is originated here: ¦
+'  ¦ https://github.com/KornSW/AmbientScoping                               ¦
+'  ¦ the removal of this notice is prohibited by the author!                ¦
+'  +------------------------------------------------------------------------+
+
+Imports System
 Imports System.Threading.Tasks
 Imports AmbientScoping
 Imports ComponentDiscovery
-Imports DemoWithComponentDiscovery
-
 
 'Identititycontext -> Session.user + EnvironmenContext.windowsuser + Uow.processowneruser
 
@@ -21,53 +25,48 @@ Public Module DemoModule
 
     Console.WriteLine("### AmbientScoping - ShowCase ###")
 
-    WorkingContext.BehaviourOnUnboundAccess = WorkingContext.UnboundAccessBehaviour.ReturnNothing
-    WorkingContext.OnContextCreatedAction = Sub(id) Console.WriteLine("OnContextCreated(HOOK): " + id)
-    WorkingContext.OnContextSuspendedAction = Sub(id) Console.WriteLine("OnContextSuspended(HOOK):  " + id)
-    WorkingContext.OnCurrentCallBoundAction = Sub(id) Console.WriteLine("OnCurrentCallBound(HOOK):  " + id)
-    WorkingContext.OnCurrentCallUnboundAction = Sub(id) Console.WriteLine("OnCurrentCallUnbound(HOOK):  " + id)
+    UowBindingContext.BehaviourOnUnboundAccess = UowBindingContext.UnboundAccessBehaviour.ReturnNothing
+    'WorkingContext.OnContextCreatedAction = Sub(id) Console.WriteLine("OnContextCreated(HOOK): " + id)
+    'WorkingContext.OnContextSuspendedAction = Sub(id) Console.WriteLine("OnContextSuspended(HOOK):  " + id)
+    'WorkingContext.OnCurrentCallBoundAction = Sub(id) Console.WriteLine("OnCurrentCallBound(HOOK):  " + id)
+    'WorkingContext.OnCurrentCallUnboundAction = Sub(id) Console.WriteLine("OnCurrentCallUnbound(HOOK):  " + id)
     '---------------------------------------------------------------------------
 
-    WorkingContext.BindCurrentCall("Job 1")
+
+
+
+
+
+
+    UowBindingContext.BindCurrentCall("Job 1")
 
     Console.WriteLine("Please enter Tenant name for Job 1 ('TenantA' or 'TenentB'):")
     TenantBindingContext.Current.TenantIdentifier = Console.ReadLine()
 
-    WorkingContext.BindCurrentCall("Job 2")
+    UowBindingContext.BindCurrentCall("Job 2")
 
     Console.WriteLine("Please enter Tenant name for Job 2 ('TenantA' or 'TenentB'):")
     TenantBindingContext.Current.TenantIdentifier = Console.ReadLine()
 
     '---------------------------------------------------------------------------
 
-    WorkingContext.BindCurrentCall("Job 1")
-    Task.Run(AddressOf MyJobBl).ContinueWith(
-      Sub()
-        WorkingContext.Current.SuspendContext(True)
-      End Sub)
+    UowBindingContext.BindCurrentCall("Job 1")
+    'Task.Run(AddressOf MyJobBl).ContinueWith(
+    '  Sub()
+    '    UowBindingContext.Current.SuspendContext(True)
+    '  End Sub)
 
-    WorkingContext.BindCurrentCall("Job 2")
-    Task.Run(AddressOf MyJobBl).ContinueWith(
-      Sub()
-        WorkingContext.Current.SuspendContext(True)
-      End Sub)
+    UowBindingContext.BindCurrentCall("Job 2")
+    'Task.Run(AddressOf MyJobBl).ContinueWith(
+    '  Sub()
+    '    UowBindingContext.Current.SuspendContext(True)
+    '  End Sub)
 
     '---------------------------------------------------------------------------
 
-    WorkingContext.UnbindCurrentCall()
+    UowBindingContext.UnbindCurrentCall()
     Console.WriteLine("Jobs started - hit return to shudown...")
     Console.ReadLine()
-
-
-
-
-
-
-
-
-
-
-
 
 
     End '######################################################################################################
@@ -196,8 +195,8 @@ Public Interface ITypeActivationRuleset
   Sub ApplyTo(registrar As ITypeActivationRulesetRegistrar)
 End Interface
 Public Interface IAmbientScopingRulesetRegistrar
-  Sub SetDefaultScopeResolverForType(Of T)(resolver As Func(Of Type, ScopeProvider))
-  Sub SetDefaultScopeResolverForType(targetType As Type, resolver As Func(Of Type, ScopeProvider))
+  Sub SetDefaultScopeResolverForType(Of T)(resolver As Func(Of Type, ScopedContainer))
+  Sub SetDefaultScopeResolverForType(targetType As Type, resolver As Func(Of Type, ScopedContainer))
 End Interface
 Public Interface IAmbientScopingRuleset
   Sub ApplyTo(registrar As IAmbientScopingRulesetRegistrar)

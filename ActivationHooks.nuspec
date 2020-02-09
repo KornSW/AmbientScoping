@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ActivationHooks</id>
-    <version>2.0.0</version>
+    <version>3.0.0-localbuild</version>
     <title>ActivationHooks</title>
     <authors>KornSW</authors>
     <owners>KornSW</owners>
@@ -18,8 +18,8 @@
   </metadata>
   <files>
     <!-- https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory -->
-    <file src="AmbientScoping\ActivationHooks\bin\Release\ActivationHooks.dll" target="lib/{tfm}" />
-    <file src="AmbientScoping\ActivationHooks\bin\Release\ActivationHooks.xml" target="lib/{tfm}" />
-    <file src="AmbientScoping\ActivationHooks\bin\Release\ActivationHooks.pdb" target="lib/{tfm}" />
+    <file src="AmbientScoping\ActivationHooks\bin\ActivationHooks.dll" target="lib/{tfm}" />
+    <file src="AmbientScoping\ActivationHooks\bin\ActivationHooks.xml" target="lib/{tfm}" />
+    <file src="AmbientScoping\ActivationHooks\bin\ActivationHooks.pdb" target="lib/{tfm}" />
   </files>
 </package>

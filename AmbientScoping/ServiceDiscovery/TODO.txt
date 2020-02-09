@@ -1,0 +1,111 @@
+﻿getinstance ist nicht sooo gut wenn diese nicht umleiten kann
+(stichwort typ tauschen)
+
+
+
+
+
+        
+        ServiceDiscovery.GetService(of TService)()as TService
+        ServiceDiscovery.GetService(of TService)(defaultresolvomnmethid as func(of ITypeIndexer), mathodAlias as string, optional defaultPriority:=100)as TService
+          -> extension GetTypeIndexder()
+          
+        ServiceDiscovery.InvalidateDiscoveryMethodCache() <<< erlaubt neu einlesen
+        
+          es wird kein assmeblyindexger genutzt sondern ein eigener appdomain-assembly crawler, da wir ein generisches attribtu suchen (on demand beim ERSTEN ANFORERDN)
+          UND VORALLEM MUSS ER PRIVATE METHODEN DRUCHSCUEHN WENN DIESE DAS ATRIBUT HABEN
+          
+          
+          
+             
+         config oder appstart:  ServiceDiscovery.SetPriority("name.spae.AssembhnlyIndexerAsSinglton",200)
+         am stärksten entscheided die priority weil die konfiguerierbar ist,
+         bei gleicher prority (default 100) zählen die internen overrides
+         
+         
+         
+         Jede sttische method (modeul oder klasse) die ein attribut hat <ServiceDiscoveryMethod(of TService)( mathodAlias:="Singlton"|"WorkingScopeSingleton"|"WebserviceConnector",optional defaultPriority:=100)> <<<<
+            ist automatisch da               servicediscovery
+               
+         
+         
+         ServiceDiscoveryPrioritiesFoUnknownSerives("Singlton",100)
+         erviceDiscoveryPrioritiesForUnknownSerives("ComponentDiscovery.AssemblyIndexer", "ProfileScopedSingleton", 10)
+         
+         
+         
+         ###########################################################################################################
+
+
+
+
+         
+         Class AssemblyIndexer
+             
+             public shared function GetInstance()
+                Return ServiceDiscovery.GetService(of AssemblyIndexer)(addressof GetOrCreateSingleton, "Singlton")
+             end function
+             private shared function GetOrCreateSingleton()
+             
+             end function
+        
+         End class
+         
+         Class AssemblyIndexerServiceDiscovery
+         
+          <ServiceDiscoveryMethod(of AssemblyIndexer)("Singleton",110)> zoeht höher
+           sharef function
+             retuen AssemblyIndexer GetInstance
+           
+         End Calls
+                  
+                  
+                  
+         Class ClassificationBasedAssemblyIndexer
+         
+             
+             shared function GetInstance()
+                Return ServiceDiscovery.GetService(of ClassificationBasedAssemblyIndexer)
+             end function
+         
+             <ServiceDiscoveryMethod(of AssemblyIndexer)("Singleton",110)> zoeht höher
+             <ServiceDiscoveryMethod(of ClassificationBasedAssemblyIndexer)("Singleton",100)>
+             private shared function GetOrCreateSingleton() as 
+             
+             end function
+         
+         End class
+         
+         
+         
+         
+         
+         
+         ############################################################################################################
+         
+         
+         
+         
+         
+       oder:
+       getinstance leitet immer um auf 
+         GetSingletonHook
+         GetSingltonhmahct
+           default: New singlton im workingscope
+           oder UMLeITUNG AUF WEBSERVICE (stichwort drivocery)
+           oder flowable scoped singlton.getinstance...
+           
+         das ist definiert druch neben dem singlton liegende klasse namens
+           ServiceDiscoveryRuleset(of TSingleton) as TSinglton
+             
+           
+         
+         
+         
+         
+         
+         
+
+
+
+

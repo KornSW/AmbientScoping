@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{03288179-7B8B-43B4-B72F-7F366688F27F}</ProjectGuid>
+    <ProjectGuid>{BF9B5CBD-795F-433A-B04F-EC1DD22EEBFA}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AmbientScoping</RootNamespace>
-    <AssemblyName>AmbientScoping</AssemblyName>
+    <RootNamespace>ServiceDiscovery</RootNamespace>
+    <AssemblyName>ServiceDiscovery</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -19,7 +18,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>AmbientScoping.xml</DocumentationFile>
+    <DocumentationFile>ServiceDiscovery.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -28,7 +27,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>AmbientScoping.xml</DocumentationFile>
+    <DocumentationFile>ServiceDiscovery.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -46,26 +45,24 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BindingContexts\Core\UowBindingContext.vb" />
-    <Compile Include="BindingContexts\Common\TenantBindingContext.vb" />
-    <Compile Include="BindingContexts\Common\ProfileBindingContext.vb" />
-    <Compile Include="ScopedContainers\Core\UowScopedContainer.vb" />
-    <Compile Include="ScopedContainers\Common\TenantScopedContainer.vb" />
-    <Compile Include="ScopedContainers\Core\ApplicationScopedContainer.vb" />
-    <Compile Include="ScopedContainers\Common\ProfileScopedContainer.vb" />
-    <Compile Include="ScopedContainers\ScopedContainer.vb" />
-    <Compile Include="DataFlowing\FlowableDataItem.vb" />
-    <Compile Include="DataFlowing\FlowableDataBuffer.vb" />
-    <Compile Include="Singletons\SingletonController.vb" />
-    <Compile Include="Singletons\SingletonEngine.vb" />
-    <Compile Include="Singletons\ISingletonContainer.vb" />
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -101,7 +98,9 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TODO.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

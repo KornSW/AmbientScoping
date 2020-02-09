@@ -1,52 +1,65 @@
-﻿Imports System
-Imports System.Collections.Concurrent
+﻿'  +------------------------------------------------------------------------+
+'  ¦ this file is part of an open-source solution which is originated here: ¦
+'  ¦ https://github.com/KornSW/AmbientScoping                               ¦
+'  ¦ the removal of this notice is prohibited by the author!                ¦
+'  +------------------------------------------------------------------------+
+
+Imports System
 Imports System.Collections.Generic
 Imports System.Diagnostics
+Imports System.Linq
 Imports System.Threading
 
 ''' <summary>
-''' Represents the anchor of any ambience because every scope needs an 'BindingIdentifier'.
-''' The lowest level is the binding of a call to a WorkingContext, so that any other 'BindingIdentifiers' (as Tenant-Bindings, Session-Bindings, etc.)
-''' Can be placed inside of the WorkingContext.
+''' This context is the anchor-point of any scoping because it holds an ambient available binding of the current
+''' call/task to a Uow-Scope ('Unit of Work') addressed by an 'jobIdentifier'
 ''' </summary>
-Public NotInheritable Class WorkingContext
+Public NotInheritable Class UowBindingContext
 
 #Region " Default Behaviour "
 
   Shared Sub New()
 
-    '    If (webwelt) Then
-    '      WorkingContext.FallbackJobIdentifierSupplier = Function() id aus httpcontext ziehen wenn nicht da dann guid packen oder instaceid vom request
-    '               WorkingContext.FallbackMode = BindCurrentCallToFallbackJobIdentifier
-    '      WorkingContext.OnCurrentCallUnboundHook =
-    '      WorkingContext.OnCurrentCallBoundHook =
+    'TODO: sinnvolle defaults, damit das framework direkte "ready2use" ist:
+
+    'If(webwelt)
+    '  WorkingContext.FallbackJobIdentifierSupplier = Function() id aus httpcontext ziehen wenn nicht da dann guid packen oder instaceid vom request
+    '  WorkingContext.FallbackMode = BindCurrentCallToFallbackJobIdentifier
+    '  WorkingContext.OnCurrentCallUnboundHook =
+    '  WorkingContext.OnCurrentCallBoundHook =
+
     'If(winforms)
-    '      WorkingContext.FallbackJobIdentifierSupplier = Function() "(global)"
-    '      WorkingContext.FallbackMode = UseFallbackJobIdentifierOnDemand
+    '  WorkingContext.FallbackJobIdentifierSupplier = Function() "(global)"
+    '  WorkingContext.FallbackMode = UseFallbackJobIdentifierOnDemand
 
 
+    AddHandler AppDomain.CurrentDomain.DomainUnload, AddressOf AppDomain_Unload
+  End Sub
+
+  Private Shared Sub AppDomain_Unload(sender As Object, e As EventArgs)
+    For Each instanceToSuspend In _InstancesPerJobIdentifier.Values.ToArray()
+      instanceToSuspend.SuspendContext()
+    Next
   End Sub
 
 #End Region
 
-  'todo: unbind und suspend on appdoomain ende!!!!
-
 #Region " Current "
 
-  Private Shared _InstancesPerJobIdentifier As New Dictionary(Of String, WorkingContext)
+  Private Shared _InstancesPerJobIdentifier As New Dictionary(Of String, UowBindingContext)
 
   ''' <summary>
   ''' returns the WorkingContext-Instance fur the current JobIdentifier (if the current call was bound to one).
   ''' otherwise the behaviour will be as configured in 'BahaviourOnUnboundAccess' (exception, null or fallback)
   ''' </summary>
   ''' <returns></returns>
-  Public Shared ReadOnly Property Current As WorkingContext
+  Public Shared ReadOnly Property Current As UowBindingContext
     Get
       Return GetCurrent()
     End Get
   End Property
 
-  Private Shared Function GetCurrent(Optional suppressExceptions As Boolean = False) As WorkingContext
+  Private Shared Function GetCurrent(Optional suppressExceptions As Boolean = False) As UowBindingContext
 
     Dim jobIdentifier As String = _CurrentlyBoundWorkingJobIdentifier.Value
     Dim oldJobIdentifier As String = jobIdentifier
@@ -98,23 +111,23 @@ Public NotInheritable Class WorkingContext
     If (String.IsNullOrWhiteSpace(oldJobIdentifier)) Then
       If (Not String.IsNullOrWhiteSpace(_CurrentlyBoundWorkingJobIdentifier.Value)) Then
         'bind (initial)
-        If (OnCurrentCallBoundAction IsNot Nothing) Then
-          OnCurrentCallBoundAction.Invoke(_CurrentlyBoundWorkingJobIdentifier.Value)
+        If (CallBoundToUowEvent IsNot Nothing) Then
+          RaiseEvent CallBoundToUow(_CurrentlyBoundWorkingJobIdentifier.Value)
         End If
       End If
     Else
       If (String.IsNullOrWhiteSpace(_CurrentlyBoundWorkingJobIdentifier.Value)) Then
         'unbind
-        If (OnCurrentCallUnboundAction IsNot Nothing) Then
-          OnCurrentCallUnboundAction.Invoke(oldJobIdentifier)
+        If (CallUnboundFromUowEvent IsNot Nothing) Then
+          RaiseEvent CallUnboundFromUow(oldJobIdentifier)
         End If
       ElseIf (Not _CurrentlyBoundWorkingJobIdentifier.Value = oldJobIdentifier) Then
         'change
-        If (OnCurrentCallUnboundAction IsNot Nothing) Then
-          OnCurrentCallUnboundAction.Invoke(oldJobIdentifier)
+        If (CallUnboundFromUowEvent IsNot Nothing) Then
+          RaiseEvent CallUnboundFromUow(oldJobIdentifier)
         End If
-        If (OnCurrentCallBoundAction IsNot Nothing) Then
-          OnCurrentCallBoundAction.Invoke(_CurrentlyBoundWorkingJobIdentifier.Value)
+        If (CallBoundToUowEvent IsNot Nothing) Then
+          RaiseEvent CallBoundToUow(_CurrentlyBoundWorkingJobIdentifier.Value)
         End If
       End If
     End If
@@ -124,19 +137,19 @@ Public NotInheritable Class WorkingContext
     End If
 
     Dim createdNew As Boolean = False
-    Dim foundContextInstance As WorkingContext
+    Dim foundContextInstance As UowBindingContext
     SyncLock _InstancesPerJobIdentifier
       If (_InstancesPerJobIdentifier.ContainsKey(jobIdentifier)) Then
         foundContextInstance = _InstancesPerJobIdentifier(jobIdentifier)
       Else
-        foundContextInstance = New WorkingContext(jobIdentifier)
+        foundContextInstance = New UowBindingContext(jobIdentifier)
         _InstancesPerJobIdentifier.Add(jobIdentifier, foundContextInstance)
         createdNew = True
       End If
     End SyncLock
 
-    If (createdNew AndAlso OnContextCreatedAction IsNot Nothing) Then
-      OnContextCreatedAction.Invoke(jobIdentifier)
+    If (createdNew AndAlso UowScopeCreatedEvent IsNot Nothing) Then
+      RaiseEvent UowScopeCreated(jobIdentifier)
     End If
 
     Return foundContextInstance
@@ -144,7 +157,7 @@ Public NotInheritable Class WorkingContext
 
 #End Region
 
-#Region " Call Binding (AsyncLocal) "
+#Region " Ambient Call Binding (AsyncLocal) "
 
   <DebuggerBrowsable(DebuggerBrowsableState.Never)>
   Private Shared _CurrentlyBoundWorkingJobIdentifier As New AsyncLocal(Of String)
@@ -176,18 +189,18 @@ Public NotInheritable Class WorkingContext
 
     If (String.IsNullOrWhiteSpace(_CurrentlyBoundWorkingJobIdentifier.Value)) Then
       _CurrentlyBoundWorkingJobIdentifier.Value = jobIdentifier
-      If (OnCurrentCallBoundAction IsNot Nothing) Then
-        OnCurrentCallBoundAction.Invoke(jobIdentifier)
+      If (CallBoundToUowEvent IsNot Nothing) Then
+        RaiseEvent CallBoundToUow(jobIdentifier)
       End If
 
     ElseIf (Not _CurrentlyBoundWorkingJobIdentifier.Value = jobIdentifier) Then
       Dim oldValue = _CurrentlyBoundWorkingJobIdentifier.Value
       _CurrentlyBoundWorkingJobIdentifier.Value = jobIdentifier
-      If (OnCurrentCallUnboundAction IsNot Nothing) Then
-        OnCurrentCallUnboundAction.Invoke(oldValue)
+      If (CallUnboundFromUowEvent IsNot Nothing) Then
+        RaiseEvent CallUnboundFromUow(oldValue)
       End If
-      If (OnCurrentCallBoundAction IsNot Nothing) Then
-        OnCurrentCallBoundAction.Invoke(jobIdentifier)
+      If (CallBoundToUowEvent IsNot Nothing) Then
+        RaiseEvent CallBoundToUow(jobIdentifier)
       End If
     End If
 
@@ -207,19 +220,18 @@ Public NotInheritable Class WorkingContext
     Dim oldValue = _CurrentlyBoundWorkingJobIdentifier.Value
     _CurrentlyBoundWorkingJobIdentifier.Value = String.Empty
 
-    If (OnCurrentCallUnboundAction IsNot Nothing) Then
-      OnCurrentCallUnboundAction.Invoke(oldValue)
+    If (CallUnboundFromUowEvent IsNot Nothing) Then
+      RaiseEvent CallUnboundFromUow(oldValue)
     End If
 
     Return True
   End Function
 
   ''' <summary>
-  '''   ' retuens false when the current thread was not bound before
+  ''' returns false when the current thread was not bound before
   ''' </summary>
-  ''' <param name="preserveStates">Preserve all flowable states of singletons</param>
   ''' <returns></returns>
-  Public Shared Function UnbindCurrentCallAndSuspendContext(preserveStates As Boolean) As Boolean
+  Public Shared Function UnbindCurrentCallAndSuspendContext() As Boolean
 
     If (Not CurrentCallIsBound) Then
       Return False
@@ -228,14 +240,14 @@ Public NotInheritable Class WorkingContext
     Dim oldValue = _CurrentlyBoundWorkingJobIdentifier.Value
     _CurrentlyBoundWorkingJobIdentifier.Value = String.Empty
 
-    If (OnCurrentCallUnboundAction IsNot Nothing) Then
-      OnCurrentCallUnboundAction.Invoke(oldValue)
+    If (CallUnboundFromUowEvent IsNot Nothing) Then
+      RaiseEvent CallUnboundFromUow(oldValue)
     End If
 
     SyncLock _InstancesPerJobIdentifier
       If (_InstancesPerJobIdentifier.ContainsKey(oldValue)) Then
-        Dim instanceToSuspend As WorkingContext = _InstancesPerJobIdentifier(oldValue)
-        instanceToSuspend.SuspendContext(preserveStates)
+        Dim instanceToSuspend As UowBindingContext = _InstancesPerJobIdentifier(oldValue)
+        instanceToSuspend.SuspendContext()
       End If
     End SyncLock
 
@@ -296,82 +308,30 @@ Public NotInheritable Class WorkingContext
 
   Public ReadOnly Property JobIdentifier As String
 
-  Public ReadOnly Property HasPreservedStates As Boolean
-    Get
+  Public Sub SuspendContext()
 
-    End Get
-  End Property
-
-  Public ReadOnly Property FlowableStates As ConcurrentDictionary(Of String, Object)
-
-  'TODO: invoke state stores requestUpdate(me.FlowableStates)
-  '  aus das setzen hier (wiederherstellen) muss über die anderen bindings eine autmaitshc cascarde starten (mit singlton resets...)
-
-
-
-
-  'TODO: evtl setter um presevedstates beim hochfahren wieder einzuspeilen
-
-  ''' <summary>
-  ''' 
-  ''' </summary>
-  ''' <param name="preserveStates">Preserve all flowable states of singletons</param>
-  Public Sub SuspendContext(preserveStates As Boolean)
-
-
-
-    'hier singletons herunterfahren
-
-
-
-
-
-
-
-
-    If (OnContextSuspendedAction IsNot Nothing) Then
-      OnContextSuspendedAction.Invoke(Me.JobIdentifier) 'preserveStates
+    'this triggers the shutdown of singletons...
+    If (UowScopeSuspendingEvent IsNot Nothing) Then
+      RaiseEvent UowScopeSuspending(Me.JobIdentifier)
     End If
-
-  End Sub
-
-  Public Sub ClearPresevedStatesAndResetSingletons()
-
-
-
-
-
-
 
   End Sub
 
 #End Region
 
+#Region " Events "
+
+  Public Shared Event UowScopeCreated(jobIdentifer As String)
+
+  Public Shared Event UowScopeSuspending(jobIdentifer As String)
+
+  Public Shared Event CallBoundToUow(jobIdentifer As String)
+
+  Public Shared Event CallUnboundFromUow(jobIdentifer As String)
+
+#End Region
+
 #Region " Hooks (customizing) "
-
-  ''' <summary>
-  ''' Customizing-Hook: an optional delegate, which will be invoked immediately after a new WorkingContext has been created.
-  ''' As argument the JobIdentifier of the new WorkingContext will be passed into the delegate.
-  ''' </summary>
-  Public Shared Property OnContextCreatedAction As Action(Of String) = Nothing
-
-  ''' <summary>
-  ''' Customizing-Hook: an optional delegate, which will be invoked immediately after a WorkingContext has been suspended.
-  ''' As argument the JobIdentifier of the suspended WorkingContext will be passed into the delegate.
-  ''' </summary>
-  Public Shared Property OnContextSuspendedAction As Action(Of String) = Nothing
-
-  ''' <summary>
-  ''' Customizing-Hook: an optional delegate, which will be invoked immediately after the current call (AsyncLocal) has been
-  ''' bound to a WorkingContext by setting the JobIdentifier. As argument the bound JobIdentifier will be passed into the delegate.
-  ''' </summary>
-  Public Shared Property OnCurrentCallBoundAction As Action(Of String) = Nothing '-> kann man dann In httpcontext reinwerfen
-
-  ''' <summary>
-  ''' Customizing-Hook: an optional delegate, which will be invoked immediately after the current call (AsyncLocal) has been
-  ''' unbound from a WorkingContext by removing the JobIdentifier. As argument the removed JobIdentifier will be passed into the delegate.
-  ''' </summary>
-  Public Shared Property OnCurrentCallUnboundAction As Action(Of String) = Nothing
 
   ''' <summary>
   ''' Customizing-Hook: an optional delegate for the evaluation of the JobIdentifier, which can be used to pick the correct
