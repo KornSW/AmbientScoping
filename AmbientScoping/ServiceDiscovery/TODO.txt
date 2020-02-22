@@ -3,6 +3,10 @@
 
 
 
+frage am anfang: soll die factory über die verwendung des scopefx entscheiden ? wer ist führend ? wer ist nasprechpartner?
+
+
+
 
 
         
@@ -109,3 +113,4 @@
 
 
 
+         am ende doch noch DI oben drauf packen?

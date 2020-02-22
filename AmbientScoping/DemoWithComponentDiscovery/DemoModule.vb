@@ -51,21 +51,24 @@ Public Module DemoModule
     '---------------------------------------------------------------------------
 
     UowBindingContext.BindCurrentCall("Job 1")
-    'Task.Run(AddressOf MyJobBl).ContinueWith(
+    Task.Run(AddressOf MyJobBl) '.ContinueWith(
     '  Sub()
     '    UowBindingContext.Current.SuspendContext(True)
     '  End Sub)
 
     UowBindingContext.BindCurrentCall("Job 2")
-    'Task.Run(AddressOf MyJobBl).ContinueWith(
+    Task.Run(AddressOf MyJobBl) '.ContinueWith(
     '  Sub()
     '    UowBindingContext.Current.SuspendContext(True)
     '  End Sub)
 
+
+
+
     '---------------------------------------------------------------------------
 
     UowBindingContext.UnbindCurrentCall()
-    Console.WriteLine("Jobs started - hit return to shudown...")
+    Console.WriteLine("Jobs finished - hit return to shudown...")
     Console.ReadLine()
 
 
@@ -171,11 +174,17 @@ Public Module DemoModule
 
   End Sub
 
-  Private Sub MyJobBl()
+  Private Sub MyJobBl(Optional level As Integer = 1)
 
+    For i As Integer = 1 To 10
 
+      Console.WriteLine($"Job: {UowBindingContext.Current.JobIdentifier}-@{level} / Tenenat: {TenantBindingContext.Current.TenantIdentifier}")
+      If (i = 3 AndAlso level < 3) Then
+        Task.Run(Sub() MyJobBl(level + 1))
+      End If
 
-
+      Threading.Thread.Sleep(1000)
+    Next
 
   End Sub
 

@@ -112,6 +112,10 @@
       <Project>{03288179-7b8b-43b4-b72f-7f366688f27f}</Project>
       <Name>AmbientScoping</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceDiscovery\DynamicServiceFactory.vbproj">
+      <Project>{bf9b5cbd-795f-433a-b04f-ec1dd22eebfa}</Project>
+      <Name>DynamicServiceFactory</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppIcon.ico" />

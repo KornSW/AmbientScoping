@@ -28,9 +28,9 @@ Namespace DataFlowing
         'we are providing this functionality, so any use of this by our own would cause a stack overflow!
 
         Return SingletonEngine.GetOrCreateInstance(Of FlowableDataBuffer)(
-        UowScopedContainer.GetInstance(), 'the flowable states have to be centralized in the lowerst level / smallest scope ("Unit of Work") 
-        Function() New FlowableDataBuffer(False)
-      )
+          UowScopedContainer.GetInstance(), 'the flowable states have to be centralized in the lowerst level / smallest scope ("Unit of Work") 
+          Function() New FlowableDataBuffer(False)
+        )
 
       End Get
     End Property

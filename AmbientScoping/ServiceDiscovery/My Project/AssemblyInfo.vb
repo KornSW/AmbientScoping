@@ -2,9 +2,9 @@
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
-<Assembly: AssemblyTitle("ServiceDiscovery")>
-<Assembly: AssemblyDescription("ServiceDiscovery")>
-<Assembly: AssemblyProduct("ServiceDiscovery")>
+<Assembly: AssemblyTitle("DynamicServiceFactory")>
+<Assembly: AssemblyDescription("DynamicServiceFactory")>
+<Assembly: AssemblyProduct("DynamicServiceFactory")>
 
 <Assembly: AssemblyTrademark("KornSW")>
 <Assembly: AssemblyCompany("KornSW")>
@@ -26,7 +26,7 @@ Public Module SemanticVersion
   Public Const Minor = "0"
 
   'increment this on internal fix (w/o breaking change):
-  Public Const Fix = "1"
+  Public Const Fix = "2"
 
   'AND DONT FORGET TO UPDATE THE VERSION-INFO OF THE *.nuspec FILE!!!
 #Region "..."

@@ -15,7 +15,7 @@ Namespace Singletons
 
   Public NotInheritable Class SingletonEngine
 
-#Region "(delegates)"
+#Region " (Delegates) "
 
     ''' <summary> a method which will invoked during an ambient-state reset. </summary>
     ''' <param name="singletonInstance">
@@ -60,8 +60,8 @@ Namespace Singletons
 
         _FlowableDataBuffer = value
 
-        SyncLock _KnownSingletons
-          For Each knownSingleton In _KnownSingletons
+        SyncLock KnownSingletons
+          For Each knownSingleton In KnownSingletons
             'ensure that the wired-up instance of FlowableDataBuffer is up to date
             knownSingleton.FlowableDataBuffer = value
           Next
@@ -76,8 +76,8 @@ Namespace Singletons
     End Sub
 
     Public Shared Sub PreserveAllFlowableStates()
-      SyncLock _KnownSingletons
-        For Each knownSingleton In _KnownSingletons
+      SyncLock KnownSingletons
+        For Each knownSingleton In KnownSingletons
           'will only affect already running singletons
           knownSingleton.PreserveFlowableState()
         Next
@@ -90,8 +90,8 @@ Namespace Singletons
     End Sub
 
     Public Shared Sub ReDistributeAllFlowableStates()
-      SyncLock _KnownSingletons
-        For Each knownSingleton In _KnownSingletons
+      SyncLock KnownSingletons
+        For Each knownSingleton In KnownSingletons
           'will only affect already running singletons
           knownSingleton.RecoverFlowableState()
         Next
@@ -102,13 +102,23 @@ Namespace Singletons
 
 #Region " Controllers "
 
-    Private Shared _KnownSingletons As New List(Of SingletonController)
+    Private Shared _KnownSingletons As List(Of SingletonController) = Nothing
+
+    Private Shared ReadOnly Property KnownSingletons As List(Of SingletonController)
+      Get
+        If (_KnownSingletons Is Nothing) Then
+          _KnownSingletons = New List(Of SingletonController)
+        End If
+        Return _KnownSingletons
+      End Get
+    End Property
 
     Private Shared Function GetOrCreateController(Of TSingleton)(container As ISingletonContainer, ByRef isNew As Boolean) As SingletonController
-      SyncLock _KnownSingletons
+
+      SyncLock KnownSingletons
         Dim registrationType = GetType(TSingleton)
 
-        For Each controller In _KnownSingletons
+        For Each controller In KnownSingletons
           If (ReferenceEquals(controller.Container, container)) Then
             If (controller.RegistrationType = registrationType) Then
               isNew = False
@@ -118,7 +128,7 @@ Namespace Singletons
         Next
 
         Dim newController As New SingletonController(container, registrationType, _FlowableDataBuffer)
-        _KnownSingletons.Add(newController)
+        KnownSingletons.Add(newController)
         isNew = True
         Return newController
 
