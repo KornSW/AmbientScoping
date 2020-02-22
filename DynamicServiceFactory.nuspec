@@ -2,24 +2,24 @@
 <package >
   <metadata>
     <id>DynamicServiceFactory</id>
-    <version>0.0.1-localbuild</version>
-    <title>DynamicServiceFactory</title>
+    <version>0.0.2-localbuild</version>
+    <title>Dynamic Service Factory</title>
     <authors>KornSW</authors>
     <owners>KornSW</owners>
     <!-- https://spdx.org/licenses/ -->
     <license type="expression">GPL-3.0-only</license>
     <projectUrl>https://github.com/KornSW/AmbientScoping</projectUrl>
-    <iconUrl>https://github.com/KornSW/kSystemExtensions/blob/master/PackageIcon.png?raw=true</iconUrl>
+    <iconUrl>https://github.com/KornSW/AmbientScoping/blob/master/PackageIcon.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>AmbientScoping</description>
+    <description>DynamicServiceFactory</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright KornSW</copyright>
-    <tags>Service Discovery Ambience</tags>
+    <tags>Dynamic Service Factory Dervice Discovery</tags>
   </metadata>
   <files>
     <!-- https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory -->
-    <file src="AmbientScoping\ServiceDiscovery\bin\ServiceDiscovery.dll" target="lib/{tfm}" />
-    <file src="AmbientScoping\ServiceDiscovery\bin\ServiceDiscovery.xml" target="lib/{tfm}" />
-    <file src="AmbientScoping\ServiceDiscovery\bin\ServiceDiscovery.pdb" target="lib/{tfm}" />
+    <file src="AmbientScoping\DynamicServiceFactory\bin\DynamicServiceFactory.dll" target="lib/{tfm}" />
+    <file src="AmbientScoping\DynamicServiceFactory\bin\DynamicServiceFactory.xml" target="lib/{tfm}" />
+    <file src="AmbientScoping\DynamicServiceFactory\bin\DynamicServiceFactory.pdb" target="lib/{tfm}" />
   </files>
 </package>

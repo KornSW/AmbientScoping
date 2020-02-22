@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AmbientScoping", "AmbientScoping\AmbientScoping.vbproj", "{03288179-7B8B-43B4-B72F-7F366688F27F}"
 EndProject
@@ -19,7 +19,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ActivationHooks", "Activati
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ShowCase", "DemoWithComponentDiscovery\ShowCase.vbproj", "{D5210A8F-7825-4369-966E-A204FE847B85}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DynamicServiceFactory", "ServiceDiscovery\DynamicServiceFactory.vbproj", "{BF9B5CBD-795F-433A-B04F-EC1DD22EEBFA}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DynamicServiceFactory", "DynamicServiceFactory\DynamicServiceFactory.vbproj", "{BF9B5CBD-795F-433A-B04F-EC1DD22EEBFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,5 +46,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F23DD000-A299-4B83-8E24-87EC6BD1168C}
 	EndGlobalSection
 EndGlobal
