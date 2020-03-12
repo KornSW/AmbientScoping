@@ -46,7 +46,7 @@ Namespace Singletons
     'wir wissen ja nicht in welchem scope der singleton hochfahren wird...
 
     <DebuggerBrowsable(DebuggerBrowsableState.Never)>
-    Private Shared WithEvents _FlowableDataBuffer As FlowableDataBuffer = FlowableDataBuffer.UowScopedInstance
+    Private Shared WithEvents _FlowableDataBuffer As FlowableDataBuffer = FlowableDataBuffer.GetInstance
 
     Public Shared Property FlowableDataBuffer As FlowableDataBuffer
       Get

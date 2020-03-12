@@ -11,10 +11,19 @@ Imports ComponentDiscovery
 
 'Identititycontext -> Session.user + EnvironmenContext.windowsuser + Uow.processowneruser
 
-'CallContext -> Session -> PermissionContext
-'            -> Uow -> Proifile
-'            -> Tenant
-'            -> EnvironmenContext (connectionstrings und srviceurls
+
+
+
+'AppDomain
+'Call-Tree(Ambient) 
+'             \  -> IdentiyContext (PermissionAssigments/sessionuser)
+'              \ -> WorkDomain 
+'                        \  -> EnvironmenContext (connectionstrings & srviceurls)
+'                         \ -> ProfileContext (application frature portfolio)
+'                                      \ -> TenantContext  (tenant-specific configuration)
+
+
+
 
 Public Module DemoModule
 
@@ -25,7 +34,7 @@ Public Module DemoModule
 
     Console.WriteLine("### AmbientScoping - ShowCase ###")
 
-    UowBindingContext.BehaviourOnUnboundAccess = UowBindingContext.UnboundAccessBehaviour.ReturnNothing
+    WorkDomainBinding.BehaviourOnUnboundAccess = WorkDomainBinding.UnboundAccessBehaviour.ReturnNull
     'WorkingContext.OnContextCreatedAction = Sub(id) Console.WriteLine("OnContextCreated(HOOK): " + id)
     'WorkingContext.OnContextSuspendedAction = Sub(id) Console.WriteLine("OnContextSuspended(HOOK):  " + id)
     'WorkingContext.OnCurrentCallBoundAction = Sub(id) Console.WriteLine("OnCurrentCallBound(HOOK):  " + id)
@@ -38,25 +47,25 @@ Public Module DemoModule
 
 
 
-    UowBindingContext.BindCurrentCall("Job 1")
+    WorkDomainBinding.BindCurrentCall("Job 1")
 
     Console.WriteLine("Please enter Tenant name for Job 1 ('TenantA' or 'TenentB'):")
-    TenantBindingContext.Current.TenantIdentifier = Console.ReadLine()
+    TenantContextBinding.Current.TenantIdentifier = Console.ReadLine()
 
-    UowBindingContext.BindCurrentCall("Job 2")
+    WorkDomainBinding.BindCurrentCall("Job 2")
 
     Console.WriteLine("Please enter Tenant name for Job 2 ('TenantA' or 'TenentB'):")
-    TenantBindingContext.Current.TenantIdentifier = Console.ReadLine()
+    TenantContextBinding.Current.TenantIdentifier = Console.ReadLine()
 
     '---------------------------------------------------------------------------
 
-    UowBindingContext.BindCurrentCall("Job 1")
+    WorkDomainBinding.BindCurrentCall("Job 1")
     Task.Run(AddressOf MyJobBl) '.ContinueWith(
     '  Sub()
     '    UowBindingContext.Current.SuspendContext(True)
     '  End Sub)
 
-    UowBindingContext.BindCurrentCall("Job 2")
+    WorkDomainBinding.BindCurrentCall("Job 2")
     Task.Run(AddressOf MyJobBl) '.ContinueWith(
     '  Sub()
     '    UowBindingContext.Current.SuspendContext(True)
@@ -67,7 +76,7 @@ Public Module DemoModule
 
     '---------------------------------------------------------------------------
 
-    UowBindingContext.UnbindCurrentCall()
+    WorkDomainBinding.UnbindCurrentCall()
     Console.WriteLine("Jobs finished - hit return to shudown...")
     Console.ReadLine()
 
@@ -178,7 +187,7 @@ Public Module DemoModule
 
     For i As Integer = 1 To 10
 
-      Console.WriteLine($"Job: {UowBindingContext.Current.JobIdentifier}-@{level} / Tenenat: {TenantBindingContext.Current.TenantIdentifier}")
+      Console.WriteLine($"Job: {WorkDomainBinding.Current.WorkDomainIdentifier}-@{level} / Tenenat: {TenantContextBinding.Current.TenantIdentifier}")
       If (i = 3 AndAlso level < 3) Then
         Task.Run(Sub() MyJobBl(level + 1))
       End If

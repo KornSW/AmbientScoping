@@ -53,13 +53,13 @@
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BindingContexts\Core\UowBindingContext.vb" />
-    <Compile Include="BindingContexts\Common\TenantBindingContext.vb" />
-    <Compile Include="BindingContexts\Common\ProfileBindingContext.vb" />
-    <Compile Include="ScopedContainers\Core\UowScopedContainer.vb" />
-    <Compile Include="ScopedContainers\Common\TenantScopedContainer.vb" />
-    <Compile Include="ScopedContainers\Core\ApplicationScopedContainer.vb" />
-    <Compile Include="ScopedContainers\Common\ProfileScopedContainer.vb" />
+    <Compile Include="Binding\WorkDomainBinding.vb" />
+    <Compile Include="Binding\TenantContextBinding.vb" />
+    <Compile Include="Binding\ProfileContextBinding.vb" />
+    <Compile Include="ScopedContainers\Core\WorkDomainScopedContainer.vb" />
+    <Compile Include="ScopedContainers\Common\TenantContextScopedContainer.vb" />
+    <Compile Include="ScopedContainers\Core\AppDomainScopedContainer.vb" />
+    <Compile Include="ScopedContainers\Common\ProfileContextScopedContainer.vb" />
     <Compile Include="ScopedContainers\ScopedContainer.vb" />
     <Compile Include="DataFlowing\FlowableDataItem.vb" />
     <Compile Include="DataFlowing\FlowableDataBuffer.vb" />

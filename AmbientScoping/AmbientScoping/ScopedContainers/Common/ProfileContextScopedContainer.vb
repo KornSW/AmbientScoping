@@ -12,20 +12,20 @@ Imports System.Diagnostics
 ''' of functionality fot a composite application. The states inside are scoped by the currently bound 'ProfileIdentifier' 
 ''' which is hold ambient (see ProfileBindingContext).
 ''' </summary>
-<DebuggerDisplay("ProfileScopedContainer ({ProfileIdentifier})")>
-Public NotInheritable Class ProfileScopedContainer
+<DebuggerDisplay("ProfileContextScopedContainer ({ProfileIdentifier})")>
+Public NotInheritable Class ProfileContextScopedContainer
   Inherits ScopedContainer
 
 #Region " Classic Singleton "
 
-  'this will ever be an clissical 'unscoped' singleton, because any scope discrimination will be done by the instance-methods
+  'this will ever be an classical 'unscoped' singleton, because any scope discrimination will be done by the instance-methods
 
-  Private Shared _Current As ProfileScopedContainer = Nothing
+  Private Shared _Current As ProfileContextScopedContainer = Nothing
 
-  Public Shared ReadOnly Property GetInstance() As ProfileScopedContainer
+  Public Shared ReadOnly Property GetInstance() As ProfileContextScopedContainer
     Get
       If (_Current Is Nothing) Then
-        _Current = New ProfileScopedContainer
+        _Current = New ProfileContextScopedContainer
       End If
       Return _Current
     End Get
@@ -34,11 +34,11 @@ Public NotInheritable Class ProfileScopedContainer
 #End Region
 
   Private Sub New()
-    AddHandler ProfileBindingContext.ProfileScopeSuspending, AddressOf Me.Suspend
+    AddHandler ProfileContextBinding.ProfileScopeSuspending, AddressOf Me.Suspend
   End Sub
 
   Protected Overrides Sub Suspend(discriminator As Object)
-    RemoveHandler ProfileBindingContext.ProfileScopeSuspending, AddressOf Me.Suspend
+    RemoveHandler ProfileContextBinding.ProfileScopeSuspending, AddressOf Me.Suspend
     MyBase.Suspend(discriminator)
   End Sub
 
@@ -48,13 +48,13 @@ Public NotInheritable Class ProfileScopedContainer
 
   Public ReadOnly Property ProfileIdentifier As String
     Get
-      Return ProfileBindingContext.Current.ProfileIdentifier
+      Return ProfileContextBinding.Current.ProfileIdentifier
     End Get
   End Property
 
   'just convenience...
   Public Sub SwitchProfile(profileIdentifier As String)
-    ProfileBindingContext.Current.ProfileIdentifier = profileIdentifier
+    ProfileContextBinding.Current.ProfileIdentifier = profileIdentifier
   End Sub
 
 End Class

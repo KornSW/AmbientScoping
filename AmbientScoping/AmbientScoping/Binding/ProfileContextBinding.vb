@@ -10,19 +10,19 @@ Imports System.Diagnostics
 Imports System.Linq
 Imports AmbientScoping.Singletons
 
-Public Class ProfileBindingContext
+Public Class ProfileContextBinding
   Implements IDisposable
 
-  ''' <summary> This decides about the scope of the binding. By default, the 'UowScopedContainer' is used.
-  ''' This means, that the decition about the 'current Profile' is stored for each 'Unit of Work' separately.</summary>
-  Public Shared Property ScopedContainerSelector As Func(Of ISingletonContainer) = Function() UowScopedContainer.GetInstance()
+  ''' <summary> This decides about the scope of the binding. By default, the 'WorkDomainScopedContainer' is used.
+  ''' This means, that the decition about the 'current Profile' is stored for each 'WorkDomain' separately.</summary>
+  Public Shared Property ScopedContainerSelector As Func(Of ISingletonContainer) = Function() WorkDomainScopedContainer.GetInstance()
 
-  Public Shared ReadOnly Property Current As ProfileBindingContext
+  Public Shared ReadOnly Property Current As ProfileContextBinding
     Get
 
-      Return SingletonEngine.GetOrCreateInstance(Of ProfileBindingContext, FlowableState)(
+      Return SingletonEngine.GetOrCreateInstance(Of ProfileContextBinding, FlowableState)(
         ScopedContainerSelector.Invoke(),
-        Function() New ProfileBindingContext,
+        Function() New ProfileContextBinding,
         AddressOf ExtractFlowableState,
         AddressOf RecoverFlowableState,
         AddressOf DefaultFlowableStateFactory,
@@ -44,11 +44,11 @@ Public Class ProfileBindingContext
     }
   End Function
 
-  Protected Shared Sub RecoverFlowableState(ByRef owner As ProfileBindingContext, snapshot As FlowableState)
+  Protected Shared Sub RecoverFlowableState(ByRef owner As ProfileContextBinding, snapshot As FlowableState)
     owner.ProfileIdentifier = snapshot.BoundProfileIdentifier
   End Sub
 
-  Protected Shared Sub ExtractFlowableState(owner As ProfileBindingContext, ByRef snapshot As FlowableState)
+  Protected Shared Sub ExtractFlowableState(owner As ProfileContextBinding, ByRef snapshot As FlowableState)
     snapshot.BoundProfileIdentifier = owner.ProfileIdentifier
   End Sub
 
@@ -97,20 +97,20 @@ Public Class ProfileBindingContext
   Public Shared Event ConsumerBoundToProfile(profileIdentifer As String, isFirst As Boolean)
   Public Shared Event ConsumerUnboundFromProfile(profileIdentifer As String, wasLast As Boolean)
 
-  Private Shared _Bindings As New Dictionary(Of String, List(Of ProfileBindingContext))
+  Private Shared _Bindings As New Dictionary(Of String, List(Of ProfileContextBinding))
 
-  Protected Shared Sub RegisterBinding(instance As ProfileBindingContext)
+  Protected Shared Sub RegisterBinding(instance As ProfileContextBinding)
 
     Dim success As Boolean = False
     Dim isFirst As Boolean = False
 
     SyncLock _Bindings
 
-      Dim lst As List(Of ProfileBindingContext)
+      Dim lst As List(Of ProfileContextBinding)
       If (_Bindings.ContainsKey(instance.ProfileIdentifier)) Then
         lst = _Bindings(instance.ProfileIdentifier)
       Else
-        lst = New List(Of ProfileBindingContext)
+        lst = New List(Of ProfileContextBinding)
         _Bindings.Add(instance.ProfileIdentifier, lst)
       End If
 
@@ -136,7 +136,7 @@ Public Class ProfileBindingContext
 
   End Sub
 
-  Protected Shared Sub UnregisterBinding(instance As ProfileBindingContext)
+  Protected Shared Sub UnregisterBinding(instance As ProfileContextBinding)
 
     Dim success As Boolean = False
     Dim wasLast As Boolean = False
@@ -175,7 +175,7 @@ Public Class ProfileBindingContext
     End SyncLock
   End Function
 
-  Public Shared Function GetInstancesByIdentifier(profileIdentifier As String) As ProfileBindingContext()
+  Public Shared Function GetInstancesByIdentifier(profileIdentifier As String) As ProfileContextBinding()
     SyncLock _Bindings
       If (_Bindings.ContainsKey(profileIdentifier)) Then
         Return _Bindings(profileIdentifier).ToArray()

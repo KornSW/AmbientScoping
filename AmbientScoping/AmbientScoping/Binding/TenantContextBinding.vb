@@ -10,19 +10,19 @@ Imports System.Diagnostics
 Imports System.Linq
 Imports AmbientScoping.Singletons
 
-Public Class TenantBindingContext
+Public Class TenantContextBinding
   Implements IDisposable
 
-  ''' <summary> This decides about the scope of the binding. By default, the 'UowScopedContainer' is used.
-  ''' This means, that the decition about the 'current Tenant' is stored for each 'Unit of Work' separately.</summary>
-  Public Shared Property ScopedContainerSelector As Func(Of ISingletonContainer) = Function() UowScopedContainer.GetInstance()
+  ''' <summary> This decides about the scope of the binding. By default, the 'WorkDomainScopedContainer' is used.
+  ''' This means, that the decition about the 'current Tenant' is stored for each 'WorkDomain' separately.</summary>
+  Public Shared Property ScopedContainerSelector As Func(Of ISingletonContainer) = Function() WorkDomainScopedContainer.GetInstance()
 
-  Public Shared ReadOnly Property Current As TenantBindingContext
+  Public Shared ReadOnly Property Current As TenantContextBinding
     Get
 
-      Return SingletonEngine.GetOrCreateInstance(Of TenantBindingContext, FlowableState)(
+      Return SingletonEngine.GetOrCreateInstance(Of TenantContextBinding, FlowableState)(
         ScopedContainerSelector.Invoke(),
-        Function() New TenantBindingContext,
+        Function() New TenantContextBinding,
         AddressOf ExtractFlowableState,
         AddressOf RecoverFlowableState,
         AddressOf DefaultFlowableStateFactory,
@@ -44,11 +44,11 @@ Public Class TenantBindingContext
     }
   End Function
 
-  Protected Shared Sub RecoverFlowableState(ByRef owner As TenantBindingContext, snapshot As FlowableState)
+  Protected Shared Sub RecoverFlowableState(ByRef owner As TenantContextBinding, snapshot As FlowableState)
     owner.TenantIdentifier = snapshot.BoundTenantIdentifier
   End Sub
 
-  Protected Shared Sub ExtractFlowableState(owner As TenantBindingContext, ByRef snapshot As FlowableState)
+  Protected Shared Sub ExtractFlowableState(owner As TenantContextBinding, ByRef snapshot As FlowableState)
     snapshot.BoundTenantIdentifier = owner.TenantIdentifier
   End Sub
 
@@ -97,20 +97,20 @@ Public Class TenantBindingContext
   Public Shared Event ConsumerBoundToTenant(profileIdentifer As String, isFirst As Boolean)
   Public Shared Event ConsumerUnboundFromTenant(profileIdentifer As String, wasLast As Boolean)
 
-  Private Shared _Bindings As New Dictionary(Of String, List(Of TenantBindingContext))
+  Private Shared _Bindings As New Dictionary(Of String, List(Of TenantContextBinding))
 
-  Protected Shared Sub RegisterBinding(instance As TenantBindingContext)
+  Protected Shared Sub RegisterBinding(instance As TenantContextBinding)
 
     Dim success As Boolean = False
     Dim isFirst As Boolean = False
 
     SyncLock _Bindings
 
-      Dim lst As List(Of TenantBindingContext)
+      Dim lst As List(Of TenantContextBinding)
       If (_Bindings.ContainsKey(instance.TenantIdentifier)) Then
         lst = _Bindings(instance.TenantIdentifier)
       Else
-        lst = New List(Of TenantBindingContext)
+        lst = New List(Of TenantContextBinding)
         _Bindings.Add(instance.TenantIdentifier, lst)
       End If
 
@@ -136,7 +136,7 @@ Public Class TenantBindingContext
 
   End Sub
 
-  Protected Shared Sub UnregisterBinding(instance As TenantBindingContext)
+  Protected Shared Sub UnregisterBinding(instance As TenantContextBinding)
 
     Dim success As Boolean = False
     Dim wasLast As Boolean = False
@@ -175,7 +175,7 @@ Public Class TenantBindingContext
     End SyncLock
   End Function
 
-  Public Shared Function GetInstancesByIdentifier(tenantIdentifier As String) As TenantBindingContext()
+  Public Shared Function GetInstancesByIdentifier(tenantIdentifier As String) As TenantContextBinding()
     SyncLock _Bindings
       If (_Bindings.ContainsKey(tenantIdentifier)) Then
         Return _Bindings(tenantIdentifier).ToArray()

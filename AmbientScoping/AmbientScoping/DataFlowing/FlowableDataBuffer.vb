@@ -21,14 +21,17 @@ Namespace DataFlowing
 
 #Region " Constructor / Factory / Default Instance "
 
-    Public Shared ReadOnly Property UowScopedInstance As FlowableDataBuffer
+    Public Shared ReadOnly Property GetInstance As FlowableDataBuffer
       Get
 
         'DANGER: we are also a singleton, but we must not touch the state flowing functionality here!
         'we are providing this functionality, so any use of this by our own would cause a stack overflow!
 
+        'NOTICE: were using the WorkDomain-level here because this is the 'finest' level (above the call-tree) which has the ability
+        'to hold 'flowable' states
+
         Return SingletonEngine.GetOrCreateInstance(Of FlowableDataBuffer)(
-          UowScopedContainer.GetInstance(), 'the flowable states have to be centralized in the lowerst level / smallest scope ("Unit of Work") 
+          WorkDomainScopedContainer.GetInstance(), 'the flowable states have to be centralized in the lowerst level / smallest scope ("Unit of Work") 
           Function() New FlowableDataBuffer(False)
         )
 

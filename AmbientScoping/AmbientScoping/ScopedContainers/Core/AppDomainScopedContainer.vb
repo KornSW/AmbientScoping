@@ -7,20 +7,20 @@
 Imports System
 Imports System.Diagnostics
 
-<DebuggerDisplay("ApplicationScopedContainer ({AppDomainId})")>
-Public NotInheritable Class ApplicationScopedContainer
+<DebuggerDisplay("AppDomainScopedContainer ({AppDomainId})")>
+Public NotInheritable Class AppDomainScopedContainer
   Inherits ScopedContainer
 
 #Region " Classic Singleton "
 
-  'this will ever be an clissical 'unscoped' singleton, because any scope discrimination will be done by the instance-methods
+  'this will ever be an classical 'unscoped' singleton, because any scope discrimination will be done by the instance-methods
 
-  Private Shared _Current As ApplicationScopedContainer = Nothing
+  Private Shared _Current As AppDomainScopedContainer = Nothing
 
-  Public Shared ReadOnly Property GetInstance() As ApplicationScopedContainer
+  Public Shared ReadOnly Property GetInstance() As AppDomainScopedContainer
     Get
       If (_Current Is Nothing) Then
-        _Current = New ApplicationScopedContainer
+        _Current = New AppDomainScopedContainer
       End If
       Return _Current
     End Get

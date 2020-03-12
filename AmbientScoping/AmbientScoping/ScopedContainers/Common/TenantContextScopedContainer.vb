@@ -11,20 +11,20 @@ Imports System.Diagnostics
 ''' This provides a per 'Tenant' discrimanted container. The states inside are scoped by the
 ''' currently bound 'TenantIdentifier' which is hold ambient (see TenantBindingContext).
 ''' </summary>
-<DebuggerDisplay("TenantScopedContainer ({TenantIdentifier})")>
-Public NotInheritable Class TenantScopedContainer
+<DebuggerDisplay("TenantContextScopedContainer ({TenantIdentifier})")>
+Public NotInheritable Class TenantContextScopedContainer
   Inherits ScopedContainer
 
 #Region " Classic Singleton "
 
-  'this will ever be an clissical 'unscoped' singleton, because any scope discrimination will be done by the instance-methods
+  'this will ever be an classical 'unscoped' singleton, because any scope discrimination will be done by the instance-methods
 
-  Private Shared _Current As TenantScopedContainer = Nothing
+  Private Shared _Current As TenantContextScopedContainer = Nothing
 
-  Public Shared ReadOnly Property GetInstance() As TenantScopedContainer
+  Public Shared ReadOnly Property GetInstance() As TenantContextScopedContainer
     Get
       If (_Current Is Nothing) Then
-        _Current = New TenantScopedContainer
+        _Current = New TenantContextScopedContainer
       End If
       Return _Current
     End Get
@@ -33,11 +33,11 @@ Public NotInheritable Class TenantScopedContainer
 #End Region
 
   Private Sub New()
-    AddHandler TenantBindingContext.TenantScopeSuspending, AddressOf Me.Suspend
+    AddHandler TenantContextBinding.TenantScopeSuspending, AddressOf Me.Suspend
   End Sub
 
   Protected Overrides Sub Suspend(discriminator As Object)
-    RemoveHandler TenantBindingContext.TenantScopeSuspending, AddressOf Me.Suspend
+    RemoveHandler TenantContextBinding.TenantScopeSuspending, AddressOf Me.Suspend
     MyBase.Suspend(discriminator)
   End Sub
 
@@ -47,13 +47,13 @@ Public NotInheritable Class TenantScopedContainer
 
   Public ReadOnly Property TenantIdentifier As String
     Get
-      Return TenantBindingContext.Current.TenantIdentifier
+      Return TenantContextBinding.Current.TenantIdentifier
     End Get
   End Property
 
   'just convenience...
   Public Sub SwitchTenant(tenantIdentifier As String)
-    TenantBindingContext.Current.TenantIdentifier = tenantIdentifier
+    TenantContextBinding.Current.TenantIdentifier = tenantIdentifier
   End Sub
 
 End Class
