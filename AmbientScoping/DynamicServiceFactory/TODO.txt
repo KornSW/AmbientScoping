@@ -3,6 +3,35 @@
 
 
 
+
+
+zuerst rolle der 3 artefakte scopefx(alos singlton), actiovationhhooks und discovry klären
+   wer ist 1. ansprechpartner für den verwender
+      -> doch     .Activate-function
+   wer nutzt wen
+   wer entscheided über den wunsch nach singlton und dessen scope
+   wer wählt den konkreten typ auf
+
+
+
+   Service.GetInstance() -> Activator(of T).GetSharedInstance() -> vorher wird evtl ein type-redict ausgeführt durch die dynamicServicefactory (sietzt sich in diese nhook)
+                                                                       zu Activator(of austauschtyp).GetSharedInstance() 
+                                                                -> SONST per default Singlton(aber scopefx setztsich dort rein + rulesets via ComponentDsic)
+                                                                       -> nutzt als kontruktor    Activator(of T).CreateNewInstance() 
+
+                            Activator(of T).CreateNewInstance() -> vorher wird evtl ein type-redict ausgeführt durch die dynamicServicefactory (sietzt sich in diese nhook)
+
+
+
+
+
+
+
+
+
+
+
+
 frage am anfang: soll die factory über die verwendung des scopefx entscheiden ? wer ist führend ? wer ist nasprechpartner?
 
 

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamicServiceFactory</id>
-    <version>0.0.2-localbuild</version>
+    <version>0.1.0-localbuild</version>
     <title>Dynamic Service Factory</title>
     <authors>KornSW</authors>
     <owners>KornSW</owners>
@@ -15,11 +15,16 @@
     <releaseNotes></releaseNotes>
     <copyright>Copyright KornSW</copyright>
     <tags>Dynamic Service Factory Dervice Discovery</tags>
+    <dependencies>
+      <group>
+        <dependency id="ComponentDiscovery" version="[4.1.0,4.9999]" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <!-- https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory -->
-    <file src="AmbientScoping\DynamicServiceFactory\bin\DynamicServiceFactory.dll" target="lib/{tfm}" />
-    <file src="AmbientScoping\DynamicServiceFactory\bin\DynamicServiceFactory.xml" target="lib/{tfm}" />
-    <file src="AmbientScoping\DynamicServiceFactory\bin\DynamicServiceFactory.pdb" target="lib/{tfm}" />
+    <file src="(Stage)\Bin\DynamicServiceFactory.dll" target="lib/{tfm}" />
+    <file src="(Stage)\Bin\DynamicServiceFactory.xml" target="lib/{tfm}" />
+    <file src="(Stage)\Bin\DynamicServiceFactory.pdb" target="lib/{tfm}" />
   </files>
 </package>

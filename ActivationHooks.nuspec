@@ -18,8 +18,8 @@
   </metadata>
   <files>
     <!-- https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory -->
-    <file src="AmbientScoping\ActivationHooks\bin\ActivationHooks.dll" target="lib/{tfm}" />
-    <file src="AmbientScoping\ActivationHooks\bin\ActivationHooks.xml" target="lib/{tfm}" />
-    <file src="AmbientScoping\ActivationHooks\bin\ActivationHooks.pdb" target="lib/{tfm}" />
+    <file src="(Stage)\Bin\ActivationHooks.dll" target="lib/{tfm}" />
+    <file src="(Stage)\Bin\ActivationHooks.xml" target="lib/{tfm}" />
+    <file src="(Stage)\Bin\ActivationHooks.pdb" target="lib/{tfm}" />
   </files>
 </package>

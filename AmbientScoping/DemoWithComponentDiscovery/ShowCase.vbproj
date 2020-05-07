@@ -21,8 +21,9 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\</OutputPath>
-    <DocumentationFile>ShowCase.xml</DocumentationFile>
+    <OutputPath>..\..\%28Stage%29\Bin\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -31,8 +32,9 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DocumentationFile>ShowCase.xml</DocumentationFile>
+    <OutputPath>..\..\%28Stage%29\Bin\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -51,9 +53,25 @@
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ComponentDiscovery">
-      <HintPath>..\..\(Vendor)\NuGet\ComponentDiscovery.3.1.2\lib\{tfm}\ComponentDiscovery.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="ActivationHooks, Version=3.0.0.23929, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\(Stage)\Bin\ActivationHooks.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AmbientScoping, Version=1.0.0.23929, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\(Stage)\Bin\AmbientScoping.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ComponentDiscovery, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\(Stage)\Bin\ComponentDiscovery.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DynamicServiceFactory, Version=0.1.0.23929, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\(Stage)\Bin\DynamicServiceFactory.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -101,21 +119,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ActivationHooks\ActivationHooks.vbproj">
-      <Project>{f78c8e97-0160-4d1c-a2c0-87cb7b2240b6}</Project>
-      <Name>ActivationHooks</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmbientScoping\AmbientScoping.vbproj">
-      <Project>{03288179-7b8b-43b4-b72f-7f366688f27f}</Project>
-      <Name>AmbientScoping</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamicServiceFactory\DynamicServiceFactory.vbproj">
-      <Project>{bf9b5cbd-795f-433a-b04f-ec1dd22eebfa}</Project>
-      <Name>DynamicServiceFactory</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppIcon.ico" />
