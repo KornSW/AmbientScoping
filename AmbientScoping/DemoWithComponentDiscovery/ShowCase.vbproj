@@ -53,10 +53,9 @@
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ActivationHooks, Version=3.0.0.23929, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ActivationHooks, Version=3.0.0.22722, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\(Stage)\Bin\ActivationHooks.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="AmbientScoping, Version=1.0.0.23929, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

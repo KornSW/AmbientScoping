@@ -53,6 +53,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ambience\AmbientCancellationToken.vb" />
+    <Compile Include="Ambience\AmbientStack.vb" />
+    <Compile Include="Ambience\AmbientStackedContext.vb" />
     <Compile Include="Binding\WorkDomainBinding.vb" />
     <Compile Include="Binding\TenantContextBinding.vb" />
     <Compile Include="Binding\ProfileContextBinding.vb" />
@@ -81,6 +84,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Threading\ThreadParticipationRegister.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
