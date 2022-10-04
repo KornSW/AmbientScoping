@@ -49,8 +49,8 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ComponentDiscovery, Version=4.7.2.601, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\(Vendor)\NuGet\ComponentDiscovery.4.7.2.601\lib\net46\ComponentDiscovery.dll</HintPath>
+    <Reference Include="ComponentDiscovery, Version=4.7.4.634, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\(Vendor)\NuGet\ComponentDiscovery.4.7.4.634\lib\net46\ComponentDiscovery.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
